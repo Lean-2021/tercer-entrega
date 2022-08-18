@@ -8,6 +8,7 @@ dotenv.config();
 
 const localStrategy = Strategy;
 const mailAdmin = "pruebacoder@gmail.com"; //mail de ejemplo para registro de nuevos usuarios
+
 passport.use(
   //passport refistro de usuarios
   "signUp",
