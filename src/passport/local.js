@@ -5,7 +5,6 @@ import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 
 dotenv.config();
-
 const localStrategy = Strategy;
 const mailAdmin = "pruebacoder@gmail.com"; //mail de ejemplo para registro de nuevos usuarios
 
