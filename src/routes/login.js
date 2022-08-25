@@ -1,13 +1,9 @@
 import { Router } from "express";
 import passport from "passport";
+import { loginView } from "../controllers/loginController.js";
 const router = Router();
 
-router.get("/", (req, res) => {
-  //mostrar pagin de Login
-  res.render("login", {
-    title: "Infoweb - Login",
-  });
-});
+router.get("/", loginView);
 
 router.post(
   "/",

@@ -1,14 +1,11 @@
 import { Router } from "express";
 import passport from "passport";
-import uploadFile from "../../multer.js";
+import { registerView } from "../controllers/registerController.js";
+import uploadFile from "../middleware/multer.js";
 
 const router = Router();
 
-router.get("/", (req, res) => {
-  res.render("register", {
-    title: "Infoweb - Registro",
-  });
-});
+router.get("/", registerView);
 
 router.post(
   "/",
@@ -16,7 +13,7 @@ router.post(
   passport.authenticate("signUp", {
     failureRedirect: "/errorRegister",
     successRedirect: "/login",
-  })
+  }),
 );
 
 export default router;

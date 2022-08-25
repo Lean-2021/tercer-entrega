@@ -1,10 +1,7 @@
 import { Router } from "express";
+import { errorRegisterView } from "../controllers/errorRegisterController.js";
 const router = Router();
 
-router.get("/", (req, res) => {
-  res.render("errorRegister", {
-    title: "Infoweb - Error",
-  });
-});
+router.get("/",errorRegisterView);
 
 export default router;

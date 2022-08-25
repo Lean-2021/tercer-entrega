@@ -1,10 +1,7 @@
 import { Router } from "express";
+import { errorloginView } from "../controllers/errorLoginController.js";
 const router = Router();
 
-router.get("/", (req, res) => {
-  res.render("errorLogin", {
-    title: "Infoweb - Error",
-  });
-});
+router.get("/", errorloginView);
 
 export default router;

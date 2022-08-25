@@ -1,12 +1,13 @@
 import passport from "passport";
 import { Strategy } from "passport-local";
 import Usuarios from "../DB/models/usuarios.js";
-import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import { loggerError } from "../utils/logger.js";
+import { encrypt, compare } from "../utils/bcrypt.js";
+import { sendMail } from "../utils/mails.js";
 
 dotenv.config();
 const localStrategy = Strategy;
-const mailAdmin = "pruebacoder@gmail.com"; //mail de ejemplo para registro de nuevos usuarios
 
 passport.use(
   //passport refistro de usuarios
@@ -27,38 +28,21 @@ passport.use(
         const { nombre, age, adress, phone } = req.body;
         user.nombre = nombre;
         user.email = email;
-        user.password = user.encrypta(password);
+        user.password = encrypt(password); // encriptar contraseña
         user.age = age;
         user.phone = phone;
         user.adress = adress;
-        user.thumbnail = req.file.path;
-        console.log(req.file);
+        if (req.file === undefined) {
+          user.thumbnail = "./public/assets/image/user.png"; //imagen por default si el usuario no sube una
+          console.log("usuario sin imagen");
+        } else {
+          user.thumbnail = req.file.path;
+        }
         await user.save();
-        const transporter = nodemailer.createTransport({
-          host: "smtp.ethereal.email",
-          port: 587,
-          auth: {
-            user: `${process.env.USER}`,
-            pass: `${process.env.PASS}`,
-          },
-        });
-        await transporter.sendMail({
-          from: `Info Web ${mailAdmin}`,
-          to: mailAdmin,
-          subject: "nuevo registro",
-          html: `
-            <h2>Nuevo Usuario Registrado</h2>
-            <h3>Datos:</h3>
-            <p>Nombre: ${user.nombre}</p>
-            <p>Email: ${user.email}</p>
-            <p>Edad: ${user.age}</p>
-            <p>Dirección: ${user.adress}</p>
-            <p>Teléfono: ${user.phone}</p>
-          `,
-        });
+        sendMail(); //envio de correo al crear un nuevo usuario
         return done(null, user);
       } catch (error) {
-        console.log(error);
+        loggerError.log("error", error);
       }
     }
   )
@@ -73,11 +57,19 @@ passport.use(
       passReqToCallback: true,
     },
     async (req, email, password, done) => {
-      const user = await Usuarios.findOne({ email });
-      if (!user || user.compara(password, user.password) === false) {
-        return done(null, false);
+      try {
+        const user = await Usuarios.findOne({ email });
+        if (!user) {
+          return done(null, false);
+        }
+        const passwordExist = compare(password, user.password); //comparar contraseñas
+        if (!passwordExist) {
+          return done(null, false);
+        }
+        return done(null, user);
+      } catch (error) {
+        loggerError.log("error", "Error al crear usuario", error);
       }
-      return done(null, user);
     }
   )
 );

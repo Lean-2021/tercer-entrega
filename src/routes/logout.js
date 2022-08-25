@@ -1,29 +1,13 @@
 import { Router } from "express";
+import {
+  logoutView,
+  logoutDestroySession,
+} from "../controllers/logoutController.js";
 
 const router = Router();
 
-router.get("/", (req, res) => {
-  //mostrar vista logout  - mensaje "hasta luego"
-  if (req.user) {
-    res.render("logout", {
-      title: "Infoweb - Logout",
-      nombre: req.session.nombre,
-    });
-  } else {
-    res.redirect("/login");
-  }
-});
+router.get("/", logoutView);
 
-router.post("/", (req, res) => {
-  // redireccionar a login luego de mostrar el mensaje
-  req.session.destroy((err) => {
-    if (!err) {
-      console.log("logout ok ");
-      res.redirect("/login");
-    } else {
-      res.send({ status: "Error al borrar session" });
-    }
-  });
-});
+router.post("/", logoutDestroySession);
 
 export default router;
