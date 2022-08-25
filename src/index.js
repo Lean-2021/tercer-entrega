@@ -20,8 +20,9 @@ const app = express();
 const httpServer = http.createServer(app);
 const io = new Server(httpServer); //implementación de websocket
 const PORT = process.env.PORT || 8080;
-const advanceOptions = { useNewUrlParser: true, useUnifiedTopology: true };
+
 connectDB();
+const advanceOptions = { useNewUrlParser: true, useUnifiedTopology: true };
 
 sockets(io);
 
