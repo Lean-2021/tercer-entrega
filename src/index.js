@@ -31,7 +31,7 @@ app.set("views", "./src/views");
 app.set("view engine", "ejs"); //motor de plantillas EJS
 
 //middlewares
-app.use(morgan("dev"));
+// app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/public", express.static("public"));
